@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>Подбор тарифа</title>
+    <style>
+        body { font-family: sans-serif; padding: 20px; max-width: 600px; margin: auto; }
+        label { display: block; margin-top: 1em; }
+        button { margin-top: 1em; padding: 0.5em 1em; }
+        #result { margin-top: 1em; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <h2>Подбор мобильного тарифа</h2>
+    <form id="tariffForm">
+        <label>Звонки (минуты): <input name="calls" placeholder="Например: 100"></label>
+        <label>Интернет (ГБ): <input name="internet" placeholder="Например: 10"></label>
+        <label>Бюджет (руб/мес): <input name="price" placeholder="Например: 300"></label>
+        <button type="submit">Подобрать тариф</button>
+    </form>
+
+    <div id="result"></div>
+
+    <script>
+        document.getElementById('tariffForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const data = {};
+            formData.forEach((value, key) => {
+                if (value.trim()) data[key] = value.trim();
+            });
+
+            const response = await fetch('/recommend', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await response.json();
+            document.getElementById('result').innerText =
+                result.recommendation ? `Рекомендуемый тариф: ${result.recommendation}` : 'Не найдено подходящего тарифа';
+        });
+    </script>
+</body>
+</html>

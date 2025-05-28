@@ -1,0 +1,7 @@
+(clear)
+(load "rules.clp")
+(reset)
+(assert (need price 200))
+(run)
+(facts)
+(exit)
